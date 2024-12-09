@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Préstamos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #007BFF;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        label, input, select, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        input, select, button {
+            padding: 10px;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Préstamos</h1>
+    <form id="loanCalculator">
+        <label for="amount">Monto del Préstamo:</label>
+        <input type="number" id="amount" placeholder="Ej. 10000" required>
+        <label for="months">Plazo (meses):</label>
+        <input type="number" id="months" placeholder="Ej. 2" required>
+        <label for="frequency">Frecuencia de Pago:</label>
+        <select id="frequency">
+            <option value="1">Semanal</option>
+            <option value="2">Quincenal</option>
+        </select>
+        <button type="button" onclick="calculateLoan()">Calcular Cuota</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        function calculateLoan() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const months = parseInt(document.getElementById('months').value);
+            const frequency = parseInt(document.getElementById('frequency').value);
+            const monthlyRate = 0.16; // 16% mensual
+
+            if (!amount || !months || !frequency) {
+                document.getElementById('result').innerText = "Por favor, completa todos los campos.";
+                return;
+            }
+
+            // Calcular número de pagos según frecuencia
+            const periods = frequency === 1 ? months * 4 : months * 2; // 4 semanas o 2 quincenas por mes
+            const ratePerPeriod = frequency === 1 ? monthlyRate / 4 : monthlyRate / 2; // Ajustar tasa
+
+            // Calcular cuota nivelada con números enteros
+            const paymentPerPeriod = Math.round((amount * ratePerPeriod * Math.pow(1 + ratePerPeriod, periods)) / (Math.pow(1 + ratePerPeriod, periods) - 1));
+
+            document.getElementById('result').innerText = `Cuota ${frequency === 1 ? "semanal" : "quincenal"} estimada: C$${paymentPerPeriod}`;
+        }
+    </script>
+</body>
+</html>
